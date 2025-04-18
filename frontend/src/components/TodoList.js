@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Checkbox, Form, Input, List, message, Progress } from 'antd';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const TodoList = ({ token, setToken }) => {
   const [todos, setTodos] = useState([]);
   const [form] = Form.useForm();
@@ -9,7 +11,7 @@ const TodoList = ({ token, setToken }) => {
   useEffect(() => {
     const fetchTodos = async () => {
       try {
-        const { data } = await axios.get('http://localhost:5000/api/todos', {
+        const { data } = await axios.get(`${API_URL}/api/todos`, {
           headers: { Authorization: token },
         });
         setTodos(data);
@@ -20,17 +22,16 @@ const TodoList = ({ token, setToken }) => {
     if (token) fetchTodos();
   }, [token]);
 
-  // Tính phần trăm tiến trình dựa trên số todo đã hoàn thành
   const calculateProgress = () => {
     if (todos.length === 0) return 0;
     const completedTodos = todos.filter((todo) => todo.completed).length;
-    return Math.round((completedTodos / todos.length) * 100); // Làm tròn số
+    return Math.round((completedTodos / todos.length) * 100);
   };
 
   const addTodo = async (values) => {
     try {
       const { data } = await axios.post(
-        'http://localhost:5000/api/todos',
+        `${API_URL}/api/todos`,
         { title: values.title },
         { headers: { Authorization: token } }
       );
@@ -44,7 +45,7 @@ const TodoList = ({ token, setToken }) => {
 
   const deleteTodo = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/todos/${id}`, {
+      await axios.delete(`${API_URL}/api/todos/${id}`, {
         headers: { Authorization: token },
       });
       setTodos(todos.filter((todo) => todo._id !== id));
@@ -57,7 +58,7 @@ const TodoList = ({ token, setToken }) => {
   const toggleTodo = async (id, completed) => {
     try {
       const { data } = await axios.put(
-        `http://localhost:5000/api/todos/${id}`,
+        `${API_URL}/api/todos/${id}`,
         { completed: !completed },
         { headers: { Authorization: token } }
       );
@@ -82,11 +83,10 @@ const TodoList = ({ token, setToken }) => {
         Logout
       </Button>
       <h2 className="Todo-title">Todo List</h2>
-      
-      {/* Thêm Progress component */}
+
       <Progress
-        percent={calculateProgress()} // Tính phần trăm tiến trình
-        status={calculateProgress() === 100 ? 'success' : 'active'} // Thành công khi 100%
+        percent={calculateProgress()}
+        status={calculateProgress() === 100 ? 'success' : 'active'}
         className="Todo-progress"
       />
 

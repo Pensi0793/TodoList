@@ -10,8 +10,14 @@ mongoose.connect(process.env.MONGO_URI)
     .catch(err => console.error(err));
 
 const app = express();
+
 app.use(express.json());
-app.use(cors());
+
+app.use(cors({
+    origin: 'https://todo-list-red-nine-46.vercel.app',
+    credentials: true
+  }));  
+
 app.use('/api/auth', authRoutes);
 app.use('/api/todos', todoRoutes);
 
