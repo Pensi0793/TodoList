@@ -9,7 +9,7 @@ const TodoList = ({ token, setToken }) => {
   useEffect(() => {
     const fetchTodos = async () => {
       try {
-        const { data } = await axios.get('https://todolist-h26x.onrender.com/', {
+        const { data } = await axios.post('https://todolist-h26x.onrender.com/api/login', {
           headers: { Authorization: token },
         });
         setTodos(data);

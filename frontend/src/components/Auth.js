@@ -29,7 +29,7 @@ const Auth = ({ setToken }) => {
     const url = isLogin ? '/api/auth/login' : '/api/auth/register';
 
     try {
-      const { data } = await axios.post(`http://localhost:5000${url}`, {
+      const { data } = await axios.post('https://todolist-h26x.onrender.com/api/login', {
         username: values.username,
         password: values.password,
       });
