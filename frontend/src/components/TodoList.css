@@ -1,0 +1,157 @@
+.todoist-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+.todoist-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.header-left h1 {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.todo-count {
+  color: #666;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.todoist-content {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+.add-todo-section {
+  margin-bottom: 20px;
+}
+
+.add-todo-form .ant-form-item {
+  margin-bottom: 0;
+}
+
+.todo-input {
+  border: none;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 10px;
+  font-size: 16px;
+  width: 100%;
+}
+
+.todo-input:focus {
+  box-shadow: none;
+  border-bottom-color: #1890ff;
+}
+
+.plus-icon {
+  color: #1890ff;
+  font-size: 20px;
+  margin-right: 8px;
+}
+
+.todos-list {
+  margin-bottom: 20px;
+}
+
+.todo-item {
+  padding: 12px !important;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.todo-item:last-child {
+  border-bottom: none;
+}
+
+.todo-content {
+  flex: 1;
+}
+
+.todo-checkbox .ant-checkbox-inner {
+  border-radius: 50%;
+}
+
+.todo-title {
+  font-size: 16px;
+  color: #333;
+  margin-left: 8px;
+}
+
+.todo-title.completed {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.todo-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-btn, .delete-btn {
+  padding: 4px 8px;
+}
+
+.progress-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.todo-progress {
+  margin-bottom: 8px;
+}
+
+.progress-text {
+  color: #666;
+  font-size: 14px;
+}
+
+.edit-modal .ant-modal-content {
+  border-radius: 8px;
+}
+
+.edit-input {
+  border: none;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 8px;
+  font-size: 16px;
+}
+
+.update-btn {
+  width: 100%;
+  margin-top: 16px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .todoist-container {
+    padding: 10px;
+  }
+
+  .todoist-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-right {
+    margin-top: 10px;
+  }
+
+  .todo-actions {
+    flex-direction: column;
+  }
+} 

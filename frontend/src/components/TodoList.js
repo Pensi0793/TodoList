@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Button, Form, Input, List, message, Progress, Modal, Checkbox } from 'antd';
+import './TodoList.css';
 
 const apiUrl = 'https://todolist-h26x.onrender.com';
 
@@ -167,69 +168,93 @@ const TodoList = ({ token, setToken }) => {
   };
 
   return (
-    <div className="Todo-container">
-      <div className="Todo-header">
-        <h2>Danh sách công việc</h2>
-        <Button type="primary" onClick={handleLogout}>
-          Đăng xuất
-        </Button>
+    <div className="todoist-container">
+      <div className="todoist-header">
+        <div className="header-left">
+          <h1>Hôm nay</h1>
+          <span className="todo-count">{todos.length} công việc</span>
+        </div>
+        <div className="header-right">
+          <Button type="text" onClick={handleLogout}>
+            Đăng xuất
+          </Button>
+        </div>
       </div>
 
-      <Progress
-        percent={calculateProgress()}
-        status={calculateProgress() === 100 ? 'success' : 'active'}
-        className="Todo-progress"
-      />
+      <div className="todoist-content">
+        <div className="add-todo-section">
+          <Form form={form} onFinish={handleAdd} className="add-todo-form">
+            <Form.Item
+              name="title"
+              rules={[{ required: true, message: 'Vui lòng nhập công việc!' }]}
+            >
+              <Input 
+                placeholder="Thêm công việc mới..." 
+                className="todo-input"
+                prefix={<span className="plus-icon">+</span>}
+              />
+            </Form.Item>
+          </Form>
+        </div>
 
-      <Form form={form} onFinish={handleAdd}>
-        <Form.Item
-          name="title"
-          rules={[{ required: true, message: 'Vui lòng nhập công việc!' }]}
-        >
-          <Input placeholder="Nhập công việc mới" />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Thêm
-          </Button>
-        </Form.Item>
-      </Form>
+        <div className="todos-list">
+          <List
+            loading={loading}
+            dataSource={todos}
+            renderItem={todo => (
+              <List.Item className="todo-item">
+                <div className="todo-content">
+                  <Checkbox
+                    checked={todo.completed}
+                    onChange={() => handleToggleComplete(todo._id, todo.completed)}
+                    className="todo-checkbox"
+                  >
+                    <span className={`todo-title ${todo.completed ? 'completed' : ''}`}>
+                      {todo.title}
+                    </span>
+                  </Checkbox>
+                </div>
+                <div className="todo-actions">
+                  <Button 
+                    type="text" 
+                    onClick={() => showEditModal(todo)}
+                    className="edit-btn"
+                  >
+                    Sửa
+                  </Button>
+                  <Button 
+                    type="text" 
+                    danger 
+                    onClick={() => handleDelete(todo._id)}
+                    className="delete-btn"
+                  >
+                    Xóa
+                  </Button>
+                </div>
+              </List.Item>
+            )}
+          />
+        </div>
 
-      <List
-        loading={loading}
-        dataSource={todos}
-        renderItem={todo => (
-          <List.Item
-            actions={[
-              <Button type="link" onClick={() => showEditModal(todo)}>
-                Sửa
-              </Button>,
-              <Button type="link" danger onClick={() => handleDelete(todo._id)}>
-                Xóa
-              </Button>
-            ]}
-          >
-            <List.Item.Meta
-              title={
-                <Checkbox
-                  checked={todo.completed}
-                  onChange={() => handleToggleComplete(todo._id, todo.completed)}
-                >
-                  <span style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}>
-                    {todo.title}
-                  </span>
-                </Checkbox>
-              }
-            />
-          </List.Item>
-        )}
-      />
+        <div className="progress-section">
+          <Progress
+            percent={calculateProgress()}
+            status={calculateProgress() === 100 ? 'success' : 'active'}
+            className="todo-progress"
+            showInfo={false}
+          />
+          <span className="progress-text">
+            {calculateProgress()}% hoàn thành
+          </span>
+        </div>
+      </div>
 
       <Modal
         title="Sửa công việc"
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
+        className="edit-modal"
       >
         <Form
           initialValues={{ title: editingTodo?.title }}
@@ -239,10 +264,10 @@ const TodoList = ({ token, setToken }) => {
             name="title"
             rules={[{ required: true, message: 'Vui lòng nhập công việc!' }]}
           >
-            <Input placeholder="Nhập công việc" />
+            <Input placeholder="Nhập công việc" className="edit-input" />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" className="update-btn">
               Cập nhật
             </Button>
           </Form.Item>
