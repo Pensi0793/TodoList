@@ -1,10 +1,7 @@
 require('dotenv').config();
-const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-
-const authRoutes = require('./routes/auth');
-const todoRoutes = require('./routes/todo');
+const app = require('./api/index'); // Import app từ api/index.js
 
 // Log giá trị MONGO_URI để kiểm tra
 console.log('MONGO_URI:', process.env.MONGO_URI);
@@ -14,10 +11,7 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('MongoDB connected'))
     .catch(err => console.error('MongoDB connection error:', err));
 
-const app = express();
-
-app.use(express.json());
-
+// Cấu hình CORS
 const allowedOrigins = [
   'http://localhost:3000',
   'https://todo-list-red-nine-46.vercel.app'
@@ -28,8 +22,6 @@ app.use(cors({
   credentials: true
 }));
 
-app.use('/api/auth', authRoutes);
-app.use('/api/todos', todoRoutes);
-
+// Cổng chạy server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
