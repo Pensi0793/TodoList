@@ -1,33 +1,135 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { Button, Checkbox, Form, Input, List, message, Progress } from 'antd';
+import { Button, Form, Input, List, message, Progress, Modal } from 'antd';
+
+const apiUrl = 'http://localhost:5000';
 
 const TodoList = ({ token, setToken }) => {
   const [todos, setTodos] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [editingTodo, setEditingTodo] = useState(null);
 
-  const apiUrl = process.env.VITE_API_URL || 'https://todolist-h26x.onrender.com';
-
+  const fetchTodos = useCallback(async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(`${apiUrl}/api/todos`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
+      setTodos(res.data);
+    } catch (err) {
+      console.error('Lỗi khi lấy danh sách todo:', err);
+      if (err.response?.status === 401) {
+        message.error('Phiên đăng nhập đã hết hạn');
+        setToken(null);
+        localStorage.removeItem('token');
+      } else {
+        message.error('Không thể lấy danh sách todo');
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [token, setToken]);
 
   useEffect(() => {
-    const fetchTodos = async () => {
-      try {
-        const { data } = await axios.get(`${apiUrl}/api/todos`, {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
-        });
-        setTodos(data);
-      } catch (error) {
-        message.error('Failed to fetch todos');
-        if (error.response?.status === 401) {
-          setToken(null);
-          localStorage.removeItem('token');
-          message.error('Session expired, please log in again');
+    fetchTodos();
+  }, [fetchTodos]);
+
+  const handleAdd = async (values) => {
+    try {
+      const res = await axios.post(
+        `${apiUrl}/api/todos`,
+        { title: values.title },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
         }
+      );
+      setTodos([...todos, res.data]);
+      form.resetFields();
+      message.success('Thêm todo thành công!');
+    } catch (err) {
+      console.error('Lỗi khi thêm todo:', err);
+      if (err.response?.status === 401) {
+        message.error('Phiên đăng nhập đã hết hạn');
+        setToken(null);
+        localStorage.removeItem('token');
+      } else {
+        message.error('Không thể thêm todo');
       }
-    };
-    if (token) fetchTodos();
-  }, [token, apiUrl, setToken]);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`${apiUrl}/api/todos/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
+      setTodos(todos.filter(todo => todo._id !== id));
+      message.success('Xóa todo thành công!');
+    } catch (err) {
+      console.error('Lỗi khi xóa todo:', err);
+      if (err.response?.status === 401) {
+        message.error('Phiên đăng nhập đã hết hạn');
+        setToken(null);
+        localStorage.removeItem('token');
+      } else {
+        message.error('Không thể xóa todo');
+      }
+    }
+  };
+
+  const handleEdit = async (values) => {
+    try {
+      const res = await axios.put(
+        `${apiUrl}/api/todos/${editingTodo._id}`,
+        { title: values.title },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        }
+      );
+      setTodos(todos.map(todo => 
+        todo._id === editingTodo._id ? res.data : todo
+      ));
+      setIsModalVisible(false);
+      message.success('Cập nhật todo thành công!');
+    } catch (err) {
+      console.error('Lỗi khi cập nhật todo:', err);
+      if (err.response?.status === 401) {
+        message.error('Phiên đăng nhập đã hết hạn');
+        setToken(null);
+        localStorage.removeItem('token');
+      } else {
+        message.error('Không thể cập nhật todo');
+      }
+    }
+  };
+
+  const showEditModal = (todo) => {
+    setEditingTodo(todo);
+    setIsModalVisible(true);
+  };
+
+  const handleLogout = () => {
+    setToken(null);
+    localStorage.removeItem('token');
+  };
 
   const calculateProgress = () => {
     if (todos.length === 0) return 0;
@@ -35,122 +137,77 @@ const TodoList = ({ token, setToken }) => {
     return Math.round((completedTodos / todos.length) * 100);
   };
 
-  const addTodo = async (values) => {
-    try {
-      const { data } = await axios.post(
-        `${apiUrl}/api/todos`,
-        { title: values.title },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
-        }
-      );
-      setTodos([...todos, data]);
-      form.resetFields();
-      message.success('Todo added!');
-    } catch (error) {
-      message.error('Failed to add todo');
-      if (error.response?.status === 401) {
-        setToken(null);
-        localStorage.removeItem('token');
-        message.error('Session expired, please log in again');
-      }
-    }
-  };
-
-  const deleteTodo = async (id) => {
-    try {
-      await axios.delete(`${apiUrl}/api/todos/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        withCredentials: true,
-      });
-      setTodos(todos.filter((todo) => todo._id !== id));
-      message.success('Todo deleted!');
-    } catch (error) {
-      message.error('Failed to delete todo');
-      if (error.response?.status === 401) {
-        setToken(null);
-        localStorage.removeItem('token');
-        message.error('Session expired, please log in again');
-      }
-    }
-  };
-
-  const toggleTodo = async (id, completed) => {
-    try {
-      const { data } = await axios.put(
-        `${apiUrl}/api/todos/${id}`,
-        { completed: !completed },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          withCredentials: true,
-        }
-      );
-      setTodos(todos.map((todo) => (todo._id === id ? data : todo)));
-      message.success('Todo updated!');
-    } catch (error) {
-      message.error('Failed to update todo');
-      if (error.response?.status === 401) {
-        setToken(null);
-        localStorage.removeItem('token');
-        message.error('Session expired, please log in again');
-      }
-    }
-  };
-
   return (
     <div className="Todo-container">
-      <Button
-        type="link"
-        danger
-        onClick={() => {
-          setToken(null);
-          localStorage.removeItem('token');
-        }}
-        className="Todo-logout-button"
-      >
-        Logout
-      </Button>
-      <h2 className="Todo-title">Todo List</h2>
+      <div className="Todo-header">
+        <h2>Danh sách công việc</h2>
+        <Button type="primary" onClick={handleLogout}>
+          Đăng xuất
+        </Button>
+      </div>
+
       <Progress
         percent={calculateProgress()}
         status={calculateProgress() === 100 ? 'success' : 'active'}
         className="Todo-progress"
       />
-      <Form form={form} onFinish={addTodo} layout="inline" className="Todo-form">
+
+      <Form form={form} onFinish={handleAdd}>
         <Form.Item
           name="title"
-          rules={[{ required: true, message: 'Please input a todo!' }]}
+          rules={[{ required: true, message: 'Vui lòng nhập công việc!' }]}
         >
-          <Input placeholder="Add a new todo" />
+          <Input placeholder="Nhập công việc mới" />
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            Add
+            Thêm
           </Button>
         </Form.Item>
       </Form>
 
       <List
-        className="Todo-list"
+        loading={loading}
         dataSource={todos}
-        renderItem={(todo) => (
+        renderItem={todo => (
           <List.Item
             actions={[
-              <Button type="link" danger onClick={() => deleteTodo(todo._id)}>
-                Delete
+              <Button type="link" onClick={() => showEditModal(todo)}>
+                Sửa
               </Button>,
+              <Button type="link" danger onClick={() => handleDelete(todo._id)}>
+                Xóa
+              </Button>
             ]}
           >
-            <Checkbox
-              checked={todo.completed}
-              onChange={() => toggleTodo(todo._id, todo.completed)}
-            >
-              {todo.completed ? <strike>{todo.title}</strike> : todo.title}
-            </Checkbox>
+            <List.Item.Meta title={todo.title} />
           </List.Item>
         )}
       />
+
+      <Modal
+        title="Sửa công việc"
+        open={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        footer={null}
+      >
+        <Form
+          initialValues={{ title: editingTodo?.title }}
+          onFinish={handleEdit}
+        >
+          <Form.Item
+            name="title"
+            rules={[{ required: true, message: 'Vui lòng nhập công việc!' }]}
+          >
+            <Input placeholder="Nhập công việc" />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Cập nhật
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 };

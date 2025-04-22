@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, Form, Input, message } from 'antd';
 
-// Sử dụng URL đầy đủ
+// Sử dụng URL của backend
 const apiUrl = 'https://todolist-h26x.onrender.com';
 
 const Register = ({ setToken }) => {
@@ -30,10 +30,8 @@ const Register = ({ setToken }) => {
         {
           headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Origin': window.location.origin
-          },
-          withCredentials: true
+            'Accept': 'application/json'
+          }
         }
       );
       console.log('Response:', res.data);
