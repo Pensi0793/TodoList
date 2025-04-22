@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, Form, Input, message } from 'antd';
 
+console.log('VITE_API_URL:', import.meta.env.VITE_API_URL);
+
 const Login = ({ setToken }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm();
