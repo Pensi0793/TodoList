@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Checkbox, Form, Input, List, message, Progress } from 'antd';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
+if (!apiUrl) {
+  console.error('❌ VITE_API_URL is undefined. Kiểm tra biến môi trường trên Vercel!');
+}
+console.log('VITE_API_URL:', apiUrl);
+
 const TodoList = ({ token, setToken }) => {
   const [todos, setTodos] = useState([]);
   const [form] = Form.useForm();
@@ -9,15 +16,14 @@ const TodoList = ({ token, setToken }) => {
   useEffect(() => {
     const fetchTodos = async () => {
       try {
-        const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/todos`, {
-          headers: { Authorization: `Bearer ${token}` }, // Thêm "Bearer " trước token
-          withCredentials: true, // Cần thiết vì backend dùng credentials: true
+        const { data } = await axios.get(`${apiUrl}/api/todos`, {
+          headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
         });
         setTodos(data);
       } catch (error) {
         message.error('Failed to fetch todos');
         if (error.response?.status === 401) {
-          // Nếu token không hợp lệ (401), đăng xuất
           setToken(null);
           localStorage.removeItem('token');
           message.error('Session expired, please log in again');
@@ -36,7 +42,7 @@ const TodoList = ({ token, setToken }) => {
   const addTodo = async (values) => {
     try {
       const { data } = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/todos`,
+        `${apiUrl}/api/todos`,
         { title: values.title },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -58,7 +64,7 @@ const TodoList = ({ token, setToken }) => {
 
   const deleteTodo = async (id) => {
     try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/api/todos/${id}`, {
+      await axios.delete(`${apiUrl}/api/todos/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
         withCredentials: true,
       });
@@ -77,7 +83,7 @@ const TodoList = ({ token, setToken }) => {
   const toggleTodo = async (id, completed) => {
     try {
       const { data } = await axios.put(
-        `${import.meta.env.VITE_API_URL}/api/todos/${id}`,
+        `${apiUrl}/api/todos/${id}`,
         { completed: !completed },
         {
           headers: { Authorization: `Bearer ${token}` },

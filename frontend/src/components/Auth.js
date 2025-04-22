@@ -2,6 +2,14 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, Checkbox, Form, Input, message } from 'antd';
 
+// Kiểm tra biến môi trường
+const apiUrl = import.meta.env.VITE_API_URL;
+
+if (!apiUrl) {
+  console.error('❌ VITE_API_URL is undefined. Kiểm tra biến môi trường trên Vercel!');
+}
+console.log('VITE_API_URL:', apiUrl);
+
 const Auth = ({ setToken }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -19,8 +27,8 @@ const Auth = ({ setToken }) => {
     setIsLoading(true);
 
     const url = isLogin
-      ? `${import.meta.env.VITE_API_URL}/api/auth/login`
-      : `${import.meta.env.VITE_API_URL}/api/auth/register`;
+      ? `${apiUrl}/api/auth/login`
+      : `${apiUrl}/api/auth/register`;
 
     try {
       const { data } = await axios.post(
@@ -30,7 +38,7 @@ const Auth = ({ setToken }) => {
           password: values.password,
         },
         {
-          withCredentials: true, // Cần thiết vì backend dùng credentials: true
+          withCredentials: true,
         }
       );
 

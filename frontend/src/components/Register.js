@@ -2,6 +2,14 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, Form, Input, message } from 'antd';
 
+// Lấy URL từ biến môi trường, và kiểm tra tồn tại
+const apiUrl = import.meta.env.VITE_API_URL;
+
+if (!apiUrl) {
+  console.error('❌ VITE_API_URL is undefined. Kiểm tra biến môi trường trên Vercel!');
+}
+console.log('VITE_API_URL:', apiUrl);
+
 const Register = ({ setToken }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm();
@@ -18,13 +26,13 @@ const Register = ({ setToken }) => {
     setIsLoading(true);
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/auth/register`, // Sửa URL để khớp với server.js
+        `${apiUrl}/api/auth/register`,
         {
           username: values.username,
           password: values.password,
         },
         {
-          withCredentials: true, // Cần thiết vì backend dùng credentials: true
+          withCredentials: true,
         }
       );
       setToken(res.data.token);
