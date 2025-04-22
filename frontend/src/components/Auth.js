@@ -3,7 +3,8 @@ import axios from 'axios';
 import { Button, Checkbox, Form, Input, message } from 'antd';
 
 // Kiểm tra biến môi trường
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiUrl = process.env.VITE_API_URL || 'https://todolist-h26x.onrender.com';
+
 
 if (!apiUrl) {
   console.error('❌ VITE_API_URL is undefined. Kiểm tra biến môi trường trên Vercel!');

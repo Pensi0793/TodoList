@@ -3,16 +3,17 @@ import axios from 'axios';
 import { Button, Form, Input, message } from 'antd';
 
 // Kiểm tra biến môi trường trước khi dùng
-const apiUrl = import.meta.env.VITE_API_URL;
-
-if (!apiUrl) {
-  console.error('❌ VITE_API_URL is undefined. Kiểm tra biến môi trường trên Vercel!');
-}
-console.log('VITE_API_URL:', apiUrl);
+const apiUrl = process.env.VITE_API_URL || 'https://todolist-h26x.onrender.com';
 
 const Login = ({ setToken }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm();
+
+console.log('VITE_API_URL:', apiUrl);
+
+if (!apiUrl) {
+  console.error('❌ VITE_API_URL is undefined. Kiểm tra biến môi trường trên Vercel!');
+}
 
   const handleSubmit = async (values) => {
     setIsLoading(true);

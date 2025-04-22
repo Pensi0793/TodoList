@@ -2,16 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Button, Checkbox, Form, Input, List, message, Progress } from 'antd';
 
-const apiUrl = import.meta.env.VITE_API_URL;
-
-if (!apiUrl) {
-  console.error('❌ VITE_API_URL is undefined. Kiểm tra biến môi trường trên Vercel!');
-}
-console.log('VITE_API_URL:', apiUrl);
-
 const TodoList = ({ token, setToken }) => {
   const [todos, setTodos] = useState([]);
   const [form] = Form.useForm();
+
+  const apiUrl = process.env.VITE_API_URL || 'https://todolist-h26x.onrender.com';
+
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -31,7 +27,7 @@ const TodoList = ({ token, setToken }) => {
       }
     };
     if (token) fetchTodos();
-  }, [token]);
+  }, [token, apiUrl, setToken]);
 
   const calculateProgress = () => {
     if (todos.length === 0) return 0;

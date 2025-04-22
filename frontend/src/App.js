@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import './App.css';
-import Login from './components/Login';
-import Register from './components/Register';
-import TodoList from './components/TodoList';
+import Login from './components/Login.js';
+import Register from './components/Register.js';
+import TodoList from './components/TodoList.js';
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token'));

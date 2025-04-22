@@ -2,13 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, Form, Input, message } from 'antd';
 
-// Lấy URL từ biến môi trường, và kiểm tra tồn tại
-const apiUrl = import.meta.env.VITE_API_URL;
-
-if (!apiUrl) {
-  console.error('❌ VITE_API_URL is undefined. Kiểm tra biến môi trường trên Vercel!');
-}
-console.log('VITE_API_URL:', apiUrl);
+// Sử dụng URL đầy đủ
+const apiUrl = 'https://todolist-h26x.onrender.com';
 
 const Register = ({ setToken }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -25,6 +20,7 @@ const Register = ({ setToken }) => {
   const handleSubmit = async (values) => {
     setIsLoading(true);
     try {
+      console.log('Đang gửi request đến:', `${apiUrl}/api/auth/register`);
       const res = await axios.post(
         `${apiUrl}/api/auth/register`,
         {
@@ -32,24 +28,41 @@ const Register = ({ setToken }) => {
           password: values.password,
         },
         {
-          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Origin': window.location.origin
+          },
+          withCredentials: true
         }
       );
+      console.log('Response:', res.data);
       setToken(res.data.token);
       localStorage.setItem('token', res.data.token);
       message.success('Đăng ký thành công!');
       form.resetFields();
     } catch (err) {
-      let errorMsg;
-      if (!err.response) {
-        errorMsg = 'Lỗi kết nối mạng, vui lòng thử lại';
-      } else if (err.response.data?.msg === 'Username already exists') {
-        errorMsg = 'Tài khoản này đã tồn tại';
+      console.error('Lỗi khi đăng ký:', err);
+      let errorMsg = 'Đã xảy ra lỗi khi đăng ký';
+      
+      if (err.response) {
+        console.error('Response data:', err.response.data);
+        console.error('Response status:', err.response.status);
+        console.error('Response headers:', err.response.headers);
+        
+        if (err.response.data?.msg === 'Username already exists') {
+          errorMsg = 'Tài khoản này đã tồn tại';
+        } else {
+          errorMsg = err.response.data?.msg || errorMsg;
+        }
+      } else if (err.request) {
+        console.error('Request error:', err.request);
+        errorMsg = 'Không thể kết nối đến server';
       } else {
-        errorMsg = err.response.data?.msg || 'Đã xảy ra lỗi khi đăng ký';
+        console.error('Error message:', err.message);
       }
+      
       message.error(errorMsg);
-      console.error(err.response?.data);
     } finally {
       setIsLoading(false);
     }
