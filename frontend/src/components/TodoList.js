@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { Button, Form, Input, List, message, Progress, Modal } from 'antd';
+import { Button, Form, Input, List, message, Progress, Modal, Checkbox } from 'antd';
 
 const apiUrl = 'https://todolist-h26x.onrender.com';
 
@@ -121,6 +121,35 @@ const TodoList = ({ token, setToken }) => {
     }
   };
 
+  const handleToggleComplete = async (id, completed) => {
+    try {
+      const res = await axios.put(
+        `${apiUrl}/api/todos/${id}`,
+        { completed: !completed },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        }
+      );
+      setTodos(todos.map(todo => 
+        todo._id === id ? res.data : todo
+      ));
+      message.success('Cập nhật trạng thái thành công!');
+    } catch (err) {
+      console.error('Lỗi khi cập nhật trạng thái:', err);
+      if (err.response?.status === 401) {
+        message.error('Phiên đăng nhập đã hết hạn');
+        setToken(null);
+        localStorage.removeItem('token');
+      } else {
+        message.error('Không thể cập nhật trạng thái');
+      }
+    }
+  };
+
   const showEditModal = (todo) => {
     setEditingTodo(todo);
     setIsModalVisible(true);
@@ -180,7 +209,18 @@ const TodoList = ({ token, setToken }) => {
               </Button>
             ]}
           >
-            <List.Item.Meta title={todo.title} />
+            <List.Item.Meta
+              title={
+                <Checkbox
+                  checked={todo.completed}
+                  onChange={() => handleToggleComplete(todo._id, todo.completed)}
+                >
+                  <span style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}>
+                    {todo.title}
+                  </span>
+                </Checkbox>
+              }
+            />
           </List.Item>
         )}
       />
