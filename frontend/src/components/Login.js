@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, Form, Input, message } from 'antd';
 
-// Sử dụng URL localhost cho development
-const apiUrl = 'http://localhost:5000';
+// Sử dụng URL của backend
+const apiUrl = 'https://todolist-h26x.onrender.com';
 
 const Login = ({ setToken }) => {
   const [isLoading, setIsLoading] = useState(false);

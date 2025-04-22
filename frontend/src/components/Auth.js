@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Button, Checkbox, Form, Input, message } from 'antd';
 
 // Kiểm tra biến môi trường
-const apiUrl = process.env.VITE_API_URL || 'https://todolist-h26x.onrender.com';
+const apiUrl = 'https://todolist-h26x.onrender.com';
 
 
 if (!apiUrl) {
