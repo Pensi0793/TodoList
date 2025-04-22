@@ -18,8 +18,8 @@ app.use(express.json());
 
 // Cấu hình CORS cho frontend trên Vercel
 const allowedOrigins = [
-  'http://localhost:3000',
-  'https://todo-list-red-nine-46.vercel.app'
+  'http://localhost:3000', // Cho môi trường phát triển
+  'https://todo-list-red-nine-46.vercel.app' // URL của frontend trên Vercel
 ];
 
 app.use(cors({

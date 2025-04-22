@@ -3,64 +3,58 @@ import axios from 'axios';
 import { Button, Checkbox, Form, Input, message } from 'antd';
 
 const Auth = ({ setToken }) => {
-  const [isLogin, setIsLogin] = useState(true); // Chế độ Login hoặc Register
-  const [isLoading, setIsLoading] = useState(false); // Trạng thái loading
-  const [form] = Form.useForm(); // Quản lý form với AntD
+  const [isLogin, setIsLogin] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [form] = Form.useForm();
 
-  // Hàm kiểm tra mật khẩu tùy chỉnh (chỉ áp dụng cho Register)
   const validatePassword = (_, value) => {
-    if (!value) {
-      return Promise.reject(new Error('Vui lòng nhập mật khẩu!'));
-    }
-    if (value.length < 6) {
-      return Promise.reject(new Error('Mật khẩu phải có ít nhất 6 ký tự!'));
-    }
-    if (!/[A-Z]/.test(value)) {
-      return Promise.reject(new Error('Mật khẩu phải có ít nhất 1 chữ cái in hoa!'));
-    }
-    if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
-      return Promise.reject(new Error('Mật khẩu phải có ít nhất 1 ký tự đặc biệt (ví dụ: !, @, #, $)'));
-    }
+    if (!value) return Promise.reject(new Error('Vui lòng nhập mật khẩu!'));
+    if (value.length < 6) return Promise.reject(new Error('Mật khẩu phải có ít nhất 6 ký tự!'));
+    if (!/[A-Z]/.test(value)) return Promise.reject(new Error('Mật khẩu phải có ít nhất 1 chữ cái in hoa!'));
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) return Promise.reject(new Error('Mật khẩu phải có ít nhất 1 ký tự đặc biệt!'));
     return Promise.resolve();
   };
 
   const onFinish = async (values) => {
-    setIsLoading(true); // Bật loading
-    const url = isLogin ? '/api/auth/login' : '/api/auth/register';
+    setIsLoading(true);
+
+    const url = isLogin
+      ? `${import.meta.env.VITE_API_URL}/api/auth/login`
+      : `${import.meta.env.VITE_API_URL}/api/auth/register`;
 
     try {
-      const { data } = await axios.post('https://todolist-h26x.onrender.com/api/login', {
-        username: values.username,
-        password: values.password,
-      });
-      setToken(data.token); // Cập nhật token qua prop
-      localStorage.setItem('token', data.token); // Lưu token vào localStorage
+      const { data } = await axios.post(
+        url,
+        {
+          username: values.username,
+          password: values.password,
+        },
+        {
+          withCredentials: true, // Cần thiết vì backend dùng credentials: true
+        }
+      );
+
+      setToken(data.token);
+      localStorage.setItem('token', data.token);
       message.success(isLogin ? 'Đăng nhập thành công!' : 'Đăng ký thành công!');
-      form.resetFields(); // Reset form sau khi thành công
+      form.resetFields();
     } catch (error) {
-      // Xử lý thông báo lỗi
       let errorMsg;
       if (isLogin) {
-        // Chỉ hiển thị lỗi này cho Login
         errorMsg = 'Tài khoản hoặc mật khẩu không đúng';
       } else {
-        // Xử lý lỗi cho Register
         if (!error.response) {
-          errorMsg = 'Lỗi kết nối mạng, vui lòng thử lại'; // Lỗi mạng
+          errorMsg = 'Lỗi kết nối mạng, vui lòng thử lại';
         } else if (error.response.data?.msg === 'Username already exists') {
-          errorMsg = 'Tài khoản này đã tồn tại'; // Tài khoản đã tồn tại
+          errorMsg = 'Tài khoản này đã tồn tại';
         } else {
           errorMsg = error.response.data?.msg || 'Đã xảy ra lỗi khi đăng ký';
         }
       }
-      message.error(errorMsg); // Hiển thị thông báo lỗi
+      message.error(errorMsg);
     } finally {
-      setIsLoading(false); // Tắt loading
+      setIsLoading(false);
     }
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log('Validation Failed:', errorInfo);
   };
 
   return (
@@ -75,7 +69,6 @@ const Auth = ({ setToken }) => {
         wrapperCol={{ span: 16 }}
         initialValues={{ remember: true }}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
         <Form.Item
@@ -94,30 +87,20 @@ const Auth = ({ setToken }) => {
           name="password"
           rules={[
             { required: true, message: 'Vui lòng nhập mật khẩu!' },
-            // Áp dụng validatePassword chỉ khi ở chế độ Register
             !isLogin && { validator: validatePassword },
-          ].filter(Boolean)} // Loại bỏ falsy values
+          ].filter(Boolean)}
         >
           <Input.Password placeholder="Nhập mật khẩu của bạn" disabled={isLoading} />
         </Form.Item>
 
         {isLogin && (
-          <Form.Item
-            name="remember"
-            valuePropName="checked"
-            wrapperCol={{ offset: 8, span: 16 }}
-          >
+          <Form.Item name="remember" valuePropName="checked" wrapperCol={{ offset: 8, span: 16 }}>
             <Checkbox disabled={isLoading}>Ghi nhớ tôi</Checkbox>
           </Form.Item>
         )}
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button
-            type="primary"
-            htmlType="submit"
-            loading={isLoading}
-            disabled={isLoading}
-          >
+          <Button type="primary" htmlType="submit" loading={isLoading} disabled={isLoading}>
             {isLogin ? 'Đăng nhập' : 'Đăng ký'}
           </Button>
           <Button

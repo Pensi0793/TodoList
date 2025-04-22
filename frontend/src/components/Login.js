@@ -9,28 +9,38 @@ const Login = ({ setToken }) => {
   const handleSubmit = async (values) => {
     setIsLoading(true);
     try {
-      const res = await axios.post('https://todolist-h26x.onrender.com/api/login', {
-        username: values.username,
-        password: values.password,
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/auth/login`, // Sửa URL để khớp với server.js
+        {
+          username: values.username,
+          password: values.password,
+        },
+        {
+          withCredentials: true, // Cần thiết vì backend dùng credentials: true
+        }
+      );
       setToken(res.data.token);
       localStorage.setItem('token', res.data.token);
       message.success('Đăng nhập thành công!');
       form.resetFields();
     } catch (err) {
-      message.error('Tài khoản hoặc mật khẩu không đúng');
+      let errorMsg = 'Tài khoản hoặc mật khẩu không đúng';
+      if (!err.response) {
+        errorMsg = 'Lỗi kết nối mạng, vui lòng thử lại';
+      } else if (err.response.status === 401) {
+        errorMsg = 'Tài khoản hoặc mật khẩu không đúng';
+      } else {
+        errorMsg = err.response.data?.msg || 'Đã xảy ra lỗi khi đăng nhập';
+      }
+      message.error(errorMsg);
       console.error(err.response?.data);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const onFinishFailed = (errorInfo) => {
-    console.log('Validation Failed:', errorInfo);
-  };
-
   return (
-    <div className="Auth-container"> {/* Class để dùng App.css */}
+    <div className="Auth-container">
       <h2 className="Auth-title">Đăng nhập</h2>
       <Form
         form={form}
@@ -39,7 +49,6 @@ const Login = ({ setToken }) => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         onFinish={handleSubmit}
-        onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
         <Form.Item
@@ -62,12 +71,7 @@ const Login = ({ setToken }) => {
         </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button
-            type="primary"
-            htmlType="submit"
-            loading={isLoading}
-            disabled={isLoading}
-          >
+          <Button type="primary" htmlType="submit" loading={isLoading} disabled={isLoading}>
             Đăng nhập
           </Button>
         </Form.Item>

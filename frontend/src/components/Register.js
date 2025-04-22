@@ -7,28 +7,26 @@ const Register = ({ setToken }) => {
   const [form] = Form.useForm();
 
   const validatePassword = (_, value) => {
-    if (!value) {
-      return Promise.reject(new Error('Vui lòng nhập mật khẩu!'));
-    }
-    if (value.length < 6) {
-      return Promise.reject(new Error('Mật khẩu phải có ít nhất 6 ký tự!'));
-    }
-    if (!/[A-Z]/.test(value)) {
-      return Promise.reject(new Error('Mật khẩu phải có ít nhất 1 chữ cái in hoa!'));
-    }
-    if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
-      return Promise.reject(new Error('Mật khẩu phải có ít nhất 1 ký tự đặc biệt (ví dụ: !, @, #, $)'));
-    }
+    if (!value) return Promise.reject(new Error('Vui lòng nhập mật khẩu!'));
+    if (value.length < 6) return Promise.reject(new Error('Mật khẩu phải có ít nhất 6 ký tự!'));
+    if (!/[A-Z]/.test(value)) return Promise.reject(new Error('Mật khẩu phải có ít nhất 1 chữ cái in hoa!'));
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) return Promise.reject(new Error('Mật khẩu phải có ít nhất 1 ký tự đặc biệt!'));
     return Promise.resolve();
   };
 
   const handleSubmit = async (values) => {
     setIsLoading(true);
     try {
-      const res = await axios.post('https://todolist-h26x.onrender.com/api/login', {
-        username: values.username,
-        password: values.password,
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/auth/register`, // Sửa URL để khớp với server.js
+        {
+          username: values.username,
+          password: values.password,
+        },
+        {
+          withCredentials: true, // Cần thiết vì backend dùng credentials: true
+        }
+      );
       setToken(res.data.token);
       localStorage.setItem('token', res.data.token);
       message.success('Đăng ký thành công!');
@@ -49,12 +47,8 @@ const Register = ({ setToken }) => {
     }
   };
 
-  const onFinishFailed = (errorInfo) => {
-    console.log('Validation Failed:', errorInfo);
-  };
-
   return (
-    <div className="Auth-container"> {/* Class để dùng App.css */}
+    <div className="Auth-container">
       <h2 className="Auth-title">Đăng ký</h2>
       <Form
         form={form}
@@ -63,7 +57,6 @@ const Register = ({ setToken }) => {
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 16 }}
         onFinish={handleSubmit}
-        onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
         <Form.Item
