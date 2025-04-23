@@ -5,8 +5,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined, ClockCircleOutlined, TagOut
 import './TodoList.css';
 import moment from 'moment';
 
-const { Option } = Select;
-const { TextArea } = Input;
+const apiUrl = 'https://todolist-h26x.onrender.com';
 
 const TodoList = ({ token, setToken }) => {
   const [todos, setTodos] = useState([]);
