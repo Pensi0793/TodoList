@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { Button, Form, Input, List, message, Progress, Modal, Checkbox, Select, DatePicker, Tag, Tooltip, Space } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, ClockCircleOutlined, TagOutlined, ProjectOutlined, ExclamationCircleOutlined, MenuFoldOutlined, MenuUnfoldOutlined, CheckCircleOutlined, CalendarOutlined } from '@ant-design/icons';
+import { PlusOutlined, EditOutlined, DeleteOutlined, ClockCircleOutlined, TagOutlined, ProjectOutlined, ExclamationCircleOutlined, MenuFoldOutlined, MenuUnfoldOutlined, CheckCircleOutlined, CalendarOutlined, InboxOutlined, BarsOutlined } from '@ant-design/icons';
 import './TodoList.css';
 import moment from 'moment';
 
@@ -200,10 +200,14 @@ const TodoList = ({ token, setToken }) => {
         <div className="sidebar-header">
           <h2 className="sidebar-title">TodoList</h2>
         </div>
-        <div className="sidebar-toggle" onClick={() => setIsCollapsed(!isCollapsed)}>
-          {isCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        </div>
         <ul className="sidebar-menu">
+          <li 
+            className={`sidebar-menu-item ${activeMenu === 'inbox' ? 'active' : ''}`}
+            onClick={() => setActiveMenu('inbox')}
+          >
+            <InboxOutlined />
+            <span>Hộp thư đến</span>
+          </li>
           <li 
             className={`sidebar-menu-item ${activeMenu === 'today' ? 'active' : ''}`}
             onClick={() => setActiveMenu('today')}
@@ -229,10 +233,14 @@ const TodoList = ({ token, setToken }) => {
       </div>
 
       <div className={`todoist-main ${isCollapsed ? 'expanded' : ''}`}>
+        <div className="sidebar-toggle" onClick={() => setIsCollapsed(!isCollapsed)}>
+          {isCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+        </div>
         <div className="todoist-header">
           <div className="header-left">
             <h1>
-              {activeMenu === 'today' ? 'Hôm nay' :
+              {activeMenu === 'inbox' ? 'Hộp thư đến' :
+               activeMenu === 'today' ? 'Hôm nay' :
                activeMenu === 'upcoming' ? 'Sắp tới' :
                'Đã hoàn thành'}
             </h1>
@@ -241,32 +249,10 @@ const TodoList = ({ token, setToken }) => {
           <div className="header-right">
             <Space>
               <Input.Search
-                placeholder="Tìm kiếm công việc..."
+                placeholder="Tìm kiếm..."
                 onChange={e => setSearchText(e.target.value)}
-                style={{ width: 200 }}
+                style={{ width: 180 }}
               />
-              <Select
-                placeholder="Dự án"
-                style={{ width: 120 }}
-                onChange={setFilterProject}
-                value={filterProject}
-              >
-                <Option value="all">Tất cả</Option>
-                {projects.map(project => (
-                  <Option key={project} value={project}>{project}</Option>
-                ))}
-              </Select>
-              <Select
-                placeholder="Tags"
-                style={{ width: 120 }}
-                onChange={setFilterTag}
-                value={filterTag}
-              >
-                <Option value="all">Tất cả</Option>
-                {tags.map(tag => (
-                  <Option key={tag} value={tag}>{tag}</Option>
-                ))}
-              </Select>
               <Button onClick={toggleDarkMode}>
                 {darkMode ? 'Sáng' : 'Tối'}
               </Button>
@@ -285,7 +271,7 @@ const TodoList = ({ token, setToken }) => {
                 <Input 
                   placeholder="Thêm công việc mới..." 
                   className="todo-input"
-                  prefix={<span className="plus-icon">+</span>}
+                  prefix={<PlusOutlined className="plus-icon" />}
                 />
               </Form.Item>
             </Form>
@@ -302,45 +288,43 @@ const TodoList = ({ token, setToken }) => {
                       checked={todo.completed}
                       onChange={() => handleToggleComplete(todo._id, todo.completed)}
                       className="todo-checkbox"
-                    >
-                      <span className={`todo-title ${todo.completed ? 'completed' : ''}`}>
-                        {todo.title}
-                      </span>
-                    </Checkbox>
+                    />
+                    <span className={`todo-title ${todo.completed ? 'completed' : ''}`}>
+                      {todo.title}
+                    </span>
                   </div>
                   <div className="todo-actions">
                     <Button 
                       type="text" 
+                      icon={<EditOutlined />}
                       onClick={() => showEditModal(todo)}
                       className="edit-btn"
-                    >
-                      Sửa
-                    </Button>
+                    />
                     <Button 
                       type="text" 
-                      danger 
+                      icon={<DeleteOutlined />}
                       onClick={() => handleDelete(todo._id)}
                       className="delete-btn"
-                    >
-                      Xóa
-                    </Button>
+                    />
                   </div>
                 </List.Item>
               )}
             />
           </div>
 
-          <div className="progress-section">
-            <Progress
-              percent={progress}
-              status={progress === 100 ? 'success' : 'active'}
-              className="todo-progress"
-              showInfo={false}
-            />
-            <span className="progress-text">
-              {progress}% hoàn thành
-            </span>
-          </div>
+          {todos.length > 0 && (
+            <div className="progress-section">
+              <Progress
+                percent={progress}
+                status={progress === 100 ? 'success' : 'active'}
+                className="todo-progress"
+                showInfo={false}
+              />
+              <span className="progress-text">
+                {progress}% hoàn thành
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -352,6 +336,7 @@ const TodoList = ({ token, setToken }) => {
         className="edit-modal"
       >
         <Form
+          form={editForm}
           initialValues={{ title: editingTodo?.title }}
           onFinish={handleEdit}
         >
@@ -359,10 +344,10 @@ const TodoList = ({ token, setToken }) => {
             name="title"
             rules={[{ required: true, message: 'Vui lòng nhập công việc!' }]}
           >
-            <Input placeholder="Nhập công việc" className="edit-input" />
+            <Input placeholder="Nhập công việc" />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="update-btn">
+            <Button type="primary" htmlType="submit" block>
               Cập nhật
             </Button>
           </Form.Item>
