@@ -17,6 +17,7 @@
   --radius-md: 8px;
   --radius-lg: 12px;
   --transition: all 0.3s ease;
+  --sidebar-width: 240px;
 }
 
 /* Dark mode variables */
@@ -36,14 +37,77 @@
 
 /* Base styles */
 .todoist-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 24px;
-  background-color: var(--background-color);
+  display: flex;
   min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: var(--transition);
+  background-color: var(--background-color);
+}
+
+/* Sidebar */
+.todoist-sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--white);
+  border-right: 1px solid var(--border-color);
+  padding: 24px 0;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.sidebar-header {
+  padding: 0 24px;
+  margin-bottom: 32px;
+}
+
+.sidebar-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-menu-item {
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-secondary);
+}
+
+.sidebar-menu-item:hover {
+  background-color: var(--hover-color);
+  color: var(--primary-color);
+}
+
+.sidebar-menu-item.active {
+  background-color: var(--hover-color);
+  color: var(--primary-color);
+  border-left: 3px solid var(--primary-color);
+}
+
+.sidebar-menu-item .anticon {
+  font-size: 18px;
+}
+
+/* Main content */
+.todoist-main {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  padding: 24px;
   transition: var(--transition);
 }
 
@@ -361,8 +425,22 @@
 
 /* Responsive styles */
 @media (max-width: 768px) {
+  .todoist-sidebar {
+    width: 0;
+    transform: translateX(-100%);
+  }
+
+  .todoist-sidebar.active {
+    width: var(--sidebar-width);
+    transform: translateX(0);
+  }
+
+  .todoist-main {
+    margin-left: 0;
+  }
+
   .todoist-container {
-    padding: 16px;
+    flex-direction: column;
   }
 
   .todoist-header {
