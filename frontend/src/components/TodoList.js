@@ -24,7 +24,7 @@ const TodoList = ({ token, setToken }) => {
   const [filterProject, setFilterProject] = useState('all');
   const [filterTag, setFilterTag] = useState('all');
   const [activeMenu, setActiveMenu] = useState('today');
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const fetchTodos = useCallback(async () => {
     try {
@@ -175,10 +175,6 @@ const TodoList = ({ token, setToken }) => {
     localStorage.removeItem('token');
   };
 
-  const toggleSidebar = () => {
-    setSidebarCollapsed(!sidebarCollapsed);
-  };
-
   const filteredTodos = todos.filter(todo => {
     const matchesSearch = todo.title.toLowerCase().includes(searchText.toLowerCase());
     const matchesProject = filterProject === 'all' || todo.project === filterProject;
@@ -200,9 +196,12 @@ const TodoList = ({ token, setToken }) => {
 
   return (
     <div className={`todoist-container ${darkMode ? 'dark-mode' : ''}`}>
-      <div className={`todoist-sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
+      <div className={`todoist-sidebar ${isCollapsed ? 'collapsed' : ''}`}>
         <div className="sidebar-header">
           <h2 className="sidebar-title">TodoList</h2>
+        </div>
+        <div className="sidebar-toggle" onClick={() => setIsCollapsed(!isCollapsed)}>
+          {isCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
         </div>
         <ul className="sidebar-menu">
           <li 
@@ -229,14 +228,9 @@ const TodoList = ({ token, setToken }) => {
         </ul>
       </div>
 
-      <div className="todoist-main">
+      <div className={`todoist-main ${isCollapsed ? 'expanded' : ''}`}>
         <div className="todoist-header">
           <div className="header-left">
-            <Button 
-              type="text" 
-              icon={sidebarCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} 
-              onClick={toggleSidebar}
-            />
             <h1>
               {activeMenu === 'today' ? 'Hôm nay' :
                activeMenu === 'upcoming' ? 'Sắp tới' :

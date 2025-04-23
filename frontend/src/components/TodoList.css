@@ -18,6 +18,7 @@
   --radius-lg: 12px;
   --transition: all 0.3s ease;
   --sidebar-width: 280px;
+  --sidebar-collapsed-width: 64px;
 }
 
 /* Dark mode variables */
@@ -60,6 +61,71 @@
   top: 0;
   transition: var(--transition);
   z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.todoist-sidebar.collapsed {
+  width: var(--sidebar-collapsed-width);
+}
+
+.sidebar-toggle {
+  position: absolute;
+  right: -12px;
+  top: 24px;
+  width: 24px;
+  height: 24px;
+  background-color: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  z-index: 1001;
+  box-shadow: var(--shadow-sm);
+}
+
+.sidebar-toggle:hover {
+  background-color: var(--hover-color);
+  transform: scale(1.1);
+}
+
+.dark-mode .sidebar-toggle {
+  background-color: var(--white);
+  border-color: var(--border-color);
+}
+
+.dark-mode .sidebar-toggle:hover {
+  background-color: var(--hover-color);
+}
+
+.sidebar-toggle .anticon {
+  color: var(--text-secondary);
+  font-size: 12px;
+  transition: var(--transition);
+}
+
+.sidebar-toggle:hover .anticon {
+  color: var(--primary-color);
+}
+
+.todoist-sidebar.collapsed .sidebar-header {
+  padding: 0 20px;
+}
+
+.todoist-sidebar.collapsed .sidebar-title {
+  display: none;
+}
+
+.todoist-sidebar.collapsed .sidebar-menu-item {
+  padding: 12px 20px;
+  justify-content: center;
+}
+
+.todoist-sidebar.collapsed .sidebar-menu-item span {
+  display: none;
 }
 
 .sidebar-header {
@@ -113,6 +179,11 @@
   transition: var(--transition);
   width: calc(100% - var(--sidebar-width));
   max-width: 100%;
+}
+
+.todoist-main.expanded {
+  margin-left: var(--sidebar-collapsed-width);
+  width: calc(100% - var(--sidebar-collapsed-width));
 }
 
 /* Header */
