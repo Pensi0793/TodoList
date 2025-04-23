@@ -27,14 +27,14 @@
   --primary-color: #db4c3f;
   --primary-hover: #b03d32;
   --text-primary: #ffffff;
-  --text-secondary: #cccccc;
-  --text-tertiary: #999999;
-  --border-color: #363636;
+  --text-secondary: #aaaaaa;
+  --text-tertiary: #777777;
+  --border-color: #333333;
   --background-color: #1f1f1f;
   --white: #282828;
   --hover-color: #363636;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --input-text: #ffffff;
+  --input-background: #363636;
 }
 
 /* Base styles */
@@ -61,7 +61,6 @@
   z-index: 1000;
   display: flex;
   flex-direction: column;
-  padding: 0;
 }
 
 .todoist-sidebar.collapsed {
@@ -109,6 +108,10 @@
 .sidebar-menu-item.active {
   color: var(--primary-color);
   background-color: rgba(219, 76, 63, 0.1);
+}
+
+.dark-mode .sidebar-menu-item.active {
+  background-color: #363636;
 }
 
 .sidebar-menu-item .anticon {
@@ -193,6 +196,11 @@
   border-radius: var(--radius-sm);
 }
 
+.dark-mode .todo-input {
+  background-color: var(--input-background);
+  color: var(--input-text);
+}
+
 .todo-input:hover {
   background-color: var(--hover-color);
 }
@@ -202,6 +210,11 @@
   border-color: var(--border-color);
   box-shadow: var(--shadow-sm);
   outline: none;
+}
+
+.dark-mode .todo-input:focus {
+  background-color: var(--input-background);
+  border-color: var(--border-color);
 }
 
 .plus-icon {
@@ -241,6 +254,12 @@
   width: 18px;
   height: 18px;
   transition: var(--transition);
+  background-color: transparent;
+}
+
+.dark-mode .todo-checkbox .ant-checkbox-inner {
+  background-color: transparent;
+  border-color: var(--text-tertiary);
 }
 
 .todo-checkbox:hover .ant-checkbox-inner {
@@ -285,14 +304,13 @@
   font-size: 13px;
 }
 
-.edit-btn:hover {
+.edit-btn:hover, .delete-btn:hover {
   color: var(--text-primary);
   background-color: var(--hover-color);
 }
 
 .delete-btn:hover {
   color: var(--danger-color);
-  background-color: var(--hover-color);
 }
 
 /* Progress section */
@@ -323,31 +341,53 @@
   min-width: 80px;
 }
 
-/* Header buttons */
-.header-right .ant-btn {
-  height: 28px;
+/* Search input */
+.ant-input-search .ant-input {
+  background-color: var(--white);
+  color: var(--text-primary);
+  border: 1px solid transparent;
+  height: 32px;
+  font-size: 13px;
+}
+
+.dark-mode .ant-input-search .ant-input {
+  background-color: var(--input-background);
+  color: var(--input-text);
+}
+
+.ant-input-search .ant-input:hover {
+  background-color: var(--hover-color);
+}
+
+.ant-input-search .ant-input:focus {
+  background-color: var(--white);
+  border-color: var(--border-color);
+}
+
+.dark-mode .ant-input-search .ant-input:focus {
+  background-color: var(--input-background);
+}
+
+/* Buttons */
+.ant-btn {
+  height: 32px;
   padding: 0 12px;
   font-size: 13px;
   border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  background: transparent;
 }
 
-/* Search and filters */
-.header-right .ant-input-search .ant-input {
-  height: 28px;
-  font-size: 13px;
+.dark-mode .ant-btn {
+  border-color: var(--border-color);
+  color: var(--text-primary);
 }
 
-.header-right .ant-select {
-  font-size: 13px;
-}
-
-.header-right .ant-select-selector {
-  height: 28px !important;
-  padding: 0 8px !important;
-}
-
-.header-right .ant-select-selection-item {
-  line-height: 26px !important;
+.ant-btn:hover {
+  color: var(--text-primary);
+  border-color: var(--border-color);
+  background-color: var(--hover-color);
 }
 
 /* Toggle sidebar button */
@@ -379,6 +419,38 @@
 .sidebar-toggle .anticon {
   color: var(--text-secondary);
   font-size: 16px;
+}
+
+/* Modal */
+.ant-modal-content {
+  background-color: var(--white);
+  border-radius: var(--radius-md);
+}
+
+.dark-mode .ant-modal-content {
+  background-color: var(--white);
+  box-shadow: var(--shadow-md);
+}
+
+.ant-modal-header {
+  background-color: var(--white);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.dark-mode .ant-modal-header {
+  border-bottom-color: var(--border-color);
+}
+
+.ant-modal-title {
+  color: var(--text-primary);
+}
+
+.ant-modal-close {
+  color: var(--text-secondary);
+}
+
+.ant-modal-close:hover {
+  color: var(--text-primary);
 }
 
 /* Responsive */
