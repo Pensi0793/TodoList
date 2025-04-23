@@ -6,7 +6,7 @@
   --text-secondary: #666666;
   --text-tertiary: #999999;
   --border-color: #e0e0e0;
-  --background-color: #f5f5f5;
+  --background-color: #ffffff;
   --white: #ffffff;
   --success-color: #4caf50;
   --hover-color: #f8f8f8;
@@ -17,7 +17,7 @@
   --radius-md: 8px;
   --radius-lg: 12px;
   --transition: all 0.3s ease;
-  --sidebar-width: 240px;
+  --sidebar-width: 280px;
 }
 
 /* Dark mode variables */
@@ -57,7 +57,7 @@
   left: 0;
   top: 0;
   transition: var(--transition);
-  box-shadow: var(--shadow-sm);
+  z-index: 1000;
 }
 
 .sidebar-header {
@@ -94,8 +94,8 @@
 }
 
 .sidebar-menu-item.active {
-  background-color: var(--hover-color);
   color: var(--primary-color);
+  background-color: rgba(63, 84, 219, 0.1);
   border-left: 3px solid var(--primary-color);
 }
 
@@ -107,8 +107,10 @@
 .todoist-main {
   flex: 1;
   margin-left: var(--sidebar-width);
-  padding: 24px;
+  padding: 24px 40px;
   transition: var(--transition);
+  width: calc(100% - var(--sidebar-width));
+  max-width: 100%;
 }
 
 /* Header */
@@ -139,10 +141,8 @@
   color: var(--text-secondary);
   font-size: 14px;
   font-weight: 400;
-  background-color: var(--white);
   padding: 4px 8px;
   border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-sm);
 }
 
 .header-right {
@@ -155,7 +155,6 @@
 .todoist-content {
   background-color: var(--white);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
   padding: 24px;
   margin-bottom: 24px;
   transition: var(--transition);
@@ -165,6 +164,10 @@
 .add-todo-section {
   margin-bottom: 24px;
   position: relative;
+  background-color: var(--white);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
 }
 
 .add-todo-form .ant-form-item {
@@ -201,11 +204,15 @@
 
 /* Todo list */
 .todos-list {
+  background-color: var(--white);
+  border-radius: var(--radius-md);
+  padding: 0;
   margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
 }
 
 .todo-item {
-  padding: 16px 0 !important;
+  padding: 16px 24px !important;
   border-bottom: 1px solid var(--border-color);
   display: flex;
   justify-content: space-between;
@@ -306,11 +313,14 @@
 /* Progress section */
 .progress-section {
   margin-top: 24px;
-  padding-top: 24px;
+  padding: 24px;
   border-top: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   gap: 16px;
+  background-color: var(--white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .todo-progress {
@@ -437,6 +447,8 @@
 
   .todoist-main {
     margin-left: 0;
+    width: 100%;
+    padding: 16px;
   }
 
   .todoist-container {
@@ -463,7 +475,7 @@
   }
 
   .todo-item {
-    padding: 16px 0 !important;
+    padding: 16px !important;
   }
 
   .todo-title {
