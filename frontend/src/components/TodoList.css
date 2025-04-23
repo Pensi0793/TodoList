@@ -33,6 +33,8 @@
   --hover-color: #333333;
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --input-text: #ffffff;
+  --input-background: #3a3a3a;
 }
 
 /* Base styles */
@@ -182,13 +184,72 @@
   width: 100%;
   transition: var(--transition);
   background: transparent;
-  color: var(--text-primary);
+  color: var(--input-text);
+}
+
+.dark-mode .todo-input {
+  background-color: var(--input-background) !important;
+  padding: 12px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.dark-mode .ant-input {
+  background-color: var(--input-background) !important;
+  color: var(--input-text) !important;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+}
+
+.dark-mode .ant-input-search .ant-input {
+  background-color: var(--input-background) !important;
+  color: var(--input-text) !important;
+}
+
+.dark-mode .ant-select-selector {
+  background-color: var(--input-background) !important;
+  color: var(--input-text) !important;
+  padding: 4px 8px !important;
+  border-radius: var(--radius-sm) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.dark-mode .ant-select-selection-item {
+  color: var(--input-text) !important;
+}
+
+.dark-mode .ant-picker {
+  background-color: var(--input-background) !important;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color) !important;
+}
+
+.dark-mode .ant-picker-input > input {
+  color: var(--input-text) !important;
+}
+
+.dark-mode .ant-form textarea.ant-input {
+  background-color: var(--input-background) !important;
+  color: var(--input-text) !important;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
 }
 
 .todo-input:focus {
   box-shadow: none;
-  border-bottom-color: var(--primary-color);
+  border-color: var(--primary-color);
   outline: none;
+}
+
+.dark-mode .todo-input:focus,
+.dark-mode .ant-input:focus,
+.dark-mode .ant-select-focused .ant-select-selector,
+.dark-mode .ant-picker-focused,
+.dark-mode .ant-form textarea.ant-input:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 2px rgba(92, 108, 255, 0.2) !important;
 }
 
 .todo-input::placeholder {
