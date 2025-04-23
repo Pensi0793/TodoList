@@ -202,6 +202,88 @@
   font-weight: bold;
 }
 
+/* Form controls */
+.ant-form-item-control-input {
+  background-color: transparent !important;
+}
+
+.ant-input {
+  background-color: transparent !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.ant-input::placeholder {
+  color: var(--text-tertiary) !important;
+}
+
+.ant-input:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: none !important;
+}
+
+.ant-form textarea.ant-input {
+  background-color: transparent !important;
+  color: var(--text-primary) !important;
+}
+
+/* Button styles */
+.ant-btn {
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+  background: transparent !important;
+}
+
+.ant-btn:hover {
+  color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.ant-btn-primary {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.ant-btn-primary:hover {
+  background-color: var(--primary-hover) !important;
+  color: white !important;
+}
+
+.ant-btn-text {
+  border: none !important;
+}
+
+.ant-btn-text:hover {
+  background-color: var(--hover-color) !important;
+}
+
+.ant-btn .anticon {
+  color: var(--text-secondary) !important;
+}
+
+.ant-btn:hover .anticon {
+  color: var(--primary-color) !important;
+}
+
+/* Menu button in header */
+.header-left .ant-btn {
+  padding: 0 8px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-left .ant-btn .anticon {
+  font-size: 18px;
+  color: var(--text-primary) !important;
+}
+
+.header-left .ant-btn:hover .anticon {
+  color: var(--primary-color) !important;
+}
+
 /* Todo list */
 .todos-list {
   background-color: var(--white);
@@ -393,7 +475,62 @@
   background-color: var(--primary-hover);
 }
 
-/* Form controls */
+/* Responsive styles */
+@media (max-width: 768px) {
+  .todoist-sidebar {
+    width: 0;
+    transform: translateX(-100%);
+  }
+
+  .todoist-sidebar.active {
+    width: var(--sidebar-width);
+    transform: translateX(0);
+  }
+
+  .todoist-main {
+    margin-left: 0;
+    width: 100%;
+    padding: 16px;
+  }
+
+  .todoist-container {
+    flex-direction: column;
+  }
+
+  .todoist-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .header-right {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .todo-actions {
+    opacity: 1;
+  }
+
+  .todoist-content {
+    padding: 16px;
+  }
+
+  .todo-item {
+    padding: 16px !important;
+  }
+
+  .todo-title {
+    font-size: 15px;
+  }
+
+  .todo-meta {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+/* Select styles */
 .ant-select-selector {
   background-color: transparent !important;
   border: none !important;
@@ -438,6 +575,7 @@
   color: var(--text-tertiary) !important;
 }
 
+/* Search input */
 .ant-input-search {
   background-color: transparent !important;
 }
@@ -461,6 +599,7 @@
   color: var(--text-tertiary) !important;
 }
 
+/* DatePicker */
 .ant-picker {
   background-color: transparent !important;
   border: none !important;
@@ -529,59 +668,4 @@
   background-color: var(--white) !important;
   border-color: var(--border-color) !important;
   color: var(--text-primary) !important;
-}
-
-/* Responsive styles */
-@media (max-width: 768px) {
-  .todoist-sidebar {
-    width: 0;
-    transform: translateX(-100%);
-  }
-
-  .todoist-sidebar.active {
-    width: var(--sidebar-width);
-    transform: translateX(0);
-  }
-
-  .todoist-main {
-    margin-left: 0;
-    width: 100%;
-    padding: 16px;
-  }
-
-  .todoist-container {
-    flex-direction: column;
-  }
-
-  .todoist-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-
-  .header-right {
-    width: 100%;
-    flex-wrap: wrap;
-  }
-
-  .todo-actions {
-    opacity: 1;
-  }
-
-  .todoist-content {
-    padding: 16px;
-  }
-
-  .todo-item {
-    padding: 16px !important;
-  }
-
-  .todo-title {
-    font-size: 15px;
-  }
-
-  .todo-meta {
-    flex-direction: column;
-    gap: 4px;
-  }
 } 
